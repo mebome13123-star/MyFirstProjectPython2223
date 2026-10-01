@@ -3,7 +3,12 @@ from tkinter import ttk, messagebox
 
 from db import Database
 from analysis import top_clients, orders_by_date, sort_orders_by_price
-
+from export_import import (
+    export_to_csv,
+    import_from_csv,
+    export_to_json,
+    import_from_json
+)
 
 class ShopApp:
     """Графическое приложение для учёта интернет-магазина."""
@@ -609,6 +614,33 @@ class ShopApp:
             columnspan=2,
             pady=10
         )
+        # Кнопки импорта и экспорта
+        export_frame = ttk.Frame(self.orders_tab)
+        export_frame.pack(fill="x", padx=10, pady=5)
+
+        ttk.Button(
+            export_frame,
+            text="Экспорт CSV",
+            command=self.export_csv
+        ).pack(side="left", padx=5)
+
+        ttk.Button(
+            export_frame,
+            text="Импорт CSV",
+            command=self.import_csv
+        ).pack(side="left", padx=5)
+
+        ttk.Button(
+            export_frame,
+            text="Экспорт JSON",
+            command=self.export_json
+        ).pack(side="left", padx=5)
+
+        ttk.Button(
+            export_frame,
+            text="Импорт JSON",
+            command=self.import_json
+        ).pack(side="left", padx=5)
 
         self.orders_table = ttk.Treeview(
             self.orders_tab,
@@ -753,7 +785,75 @@ class ShopApp:
                 "end",
                 values=order
             )
+    def export_csv(self):
+        """Экспортирует заказы в CSV."""
 
+        try:
+            orders = self.db.get_orders()
+            export_to_csv(orders)
+
+            messagebox.showinfo(
+                "Успех",
+                "Заказы экспортированы в orders.csv"
+            )
+
+        except Exception as error:
+            messagebox.showerror(
+                "Ошибка",
+                str(error)
+            )
+
+    def import_csv(self):
+        """Импортирует данные из CSV."""
+
+        try:
+            data = import_from_csv()
+
+            messagebox.showinfo(
+                "Импорт CSV",
+                f"Из файла загружено записей: {len(data)}"
+            )
+
+        except Exception as error:
+            messagebox.showerror(
+                "Ошибка",
+                str(error)
+            )
+
+    def export_json(self):
+        """Экспортирует заказы в JSON."""
+
+        try:
+            orders = self.db.get_orders()
+            export_to_json(orders)
+
+            messagebox.showinfo(
+                "Успех",
+                "Заказы экспортированы в orders.json"
+            )
+
+        except Exception as error:
+            messagebox.showerror(
+                "Ошибка",
+                str(error)
+            )
+
+    def import_json(self):
+        """Импортирует данные из JSON."""
+
+        try:
+            data = import_from_json()
+
+            messagebox.showinfo(
+                "Импорт JSON",
+                f"Из файла загружено записей: {len(data)}"
+            )
+
+        except Exception as error:
+            messagebox.showerror(
+                "Ошибка",
+                str(error)
+            )
     # =========================================================
     # АНАЛИЗ
     # =========================================================
